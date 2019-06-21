@@ -1,9 +1,9 @@
-defmodule GameLedger.MixProject do
+defmodule Elo.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :game_ledger,
+      app: :elo,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -19,7 +19,7 @@ defmodule GameLedger.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {GameLedger.Application, []}
+      mod: {Elo.Application, []}
     ]
   end
 
@@ -27,6 +27,7 @@ defmodule GameLedger.MixProject do
   defp deps do
     [
       {:gen_stage, "~> 0.11"},
+      {:game_ledger, in_umbrella: true}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
       # {:sibling_app_in_umbrella, in_umbrella: true}

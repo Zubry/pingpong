@@ -4,7 +4,7 @@ defmodule GameLedger.Producer do
   """
   use GenStage
 
-  def start_link() do
+  def start_link(_opts) do
     GenStage.start_link(__MODULE__, [], name: __MODULE__)
   end
 
@@ -18,6 +18,10 @@ defmodule GameLedger.Producer do
   end
 
   def handle_cast({:record, winner, loser}, state) do
-    {:noreply, [{:game, winner, loser}] [{winner, loser}] ++ state}
+    {:noreply, [{:game, winner, loser}], [{:game, winner, loser}] ++ state}
+  end
+
+  def handle_demand(demand, state) do
+    {:noreply, Enum.take(state, demand), state}
   end
 end
