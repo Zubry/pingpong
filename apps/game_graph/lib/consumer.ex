@@ -27,9 +27,9 @@ defmodule GameGraph.Consumer do
               {
                 player,
                 Graph.out_edges(graph, player)
-                  |> Enum.map(fn edge -> [opponent: edge.v2, games_played: edge.weight || 0] end),
+                  |> Enum.map(fn edge -> %{opponent: edge.v2, games_played: edge.weight || 0} end),
                 Graph.in_edges(graph, player)
-                  |> Enum.map(fn edge -> [opponent: edge.v1, games_played: edge.weight || 0] end),
+                  |> Enum.map(fn edge -> %{opponent: edge.v1, games_played: edge.weight || 0} end),
               }
             end)
             |> Enum.reduce(%{}, fn ({player, wins, losses}, acc) -> Map.put(acc, player, %{ wins: wins, losses: losses}) end)
@@ -41,11 +41,11 @@ defmodule GameGraph.Consumer do
   def handle_call({:results, player}, _from, graph) do
     wins = graph
       |> Graph.out_edges(player)
-      |> Enum.map(fn edge -> [opponent: edge.v2, games_played: edge.weight || 0] end)
+      |> Enum.map(fn edge -> %{opponent: edge.v2, games_played: edge.weight || 0} end)
 
     losses = graph
       |> Graph.out_edges(player)
-      |> Enum.map(fn edge -> [opponent: edge.v1, games_played: edge.weight || 0] end)
+      |> Enum.map(fn edge -> %{opponent: edge.v1, games_played: edge.weight || 0} end)
 
     {:reply, %{ wins: wins, losses: losses}, [], graph}
   end

@@ -27,7 +27,8 @@ defmodule HTTP.MixProject do
   defp deps do
     [
       {:plug_cowboy, "~> 2.0"}, # This will pull in Plug AND Cowboy
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:game_graph, in_umbrella: true}
     ]
   end
 end

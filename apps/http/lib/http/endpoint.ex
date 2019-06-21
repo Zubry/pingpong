@@ -21,39 +21,47 @@ defmodule HTTP.Endpoint do
 
   # A simple route to test that the server is up
   # Note, all routes must return a connection as per the Plug spec.
-  get "/ping" do
-    send_resp(conn, 200, "pong!")
+  get "/results" do
+    send_resp(conn, 200, Poison.encode!(GameGraph.results()))
   end
 
   # Handle incoming events, if the payload is the right shape, process the
   # events, otherwise return an error.
-  post "/events" do
+  post "/match" do
+    IO.inspect(conn.body_params)
     {status, body} =
       case conn.body_params do
-        %{"events" => events} -> {200, process_events(events)}
-        _ -> {422, missing_events()}
+        %{
+          "winner" => winner,
+          "loser" => loser,
+          "winning_score" => winning_score,
+          "losing_score" => losing_score,
+        } -> process_match(winner, loser, winning_score, losing_score)
+        _ -> {422, missing_match()}
       end
 
     send_resp(conn, status, body)
   end
 
-  defp process_events(events) when is_list(events) do
+  defp process_match(winner, loser, winning_score, losing_score) do
     # Do some processing on a list of events
-    Poison.encode!(%{response: "Received Events!"})
+    case GameLedger.record(winner, loser, winning_score, losing_score) do
+      :ok -> {200, Poison.encode!(%{response: "ok"})}
+    end
   end
 
-  defp process_events(_) do
-    # If we can't process anything, let them know :)
-    Poison.encode!(%{response: "Please Send Some Events!"})
-  end
-
-  defp missing_events do
-    Poison.encode!(%{error: "Expected Payload: { 'events': [...] }"})
+  defp missing_match do
+    Poison.encode!(%{error: "Expected Payload: {
+      'winner': id,
+      'winning_score': int,
+      'loser': id,
+      'losing_score': int,
+    }"})
   end
 
   # A catchall route, 'match' will match no matter the request method,
   # so a response is always returned, even if there is no route to match.
   match _ do
-    send_resp(conn, 404, "oops... Nothing here :(")
+    send_resp(conn, 404, "How did you end up here?")
   end
 end
