@@ -8,8 +8,24 @@ defmodule Elo.Consumer do
     GenStage.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
+  def all(pid) do
+    GenServer.call(pid, {:all})
+  end
+
+  def get(pid, player) do
+    GenServer.call(pid, {:get, player})
+  end
+
   def init(:ok) do
     {:consumer, %{}, subscribe_to: [GameLedger.Producer]}
+  end
+
+  def handle_call({:all}, _from, state) do
+    {:reply, state, [], state}
+  end
+
+  def handle_call({:get, player}, _from, state) do
+    {:reply, Map.get(state, player, 1000), [], state}
   end
 
   def handle_events(events, _from, state) do

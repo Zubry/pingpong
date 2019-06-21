@@ -19,14 +19,18 @@ defmodule HTTP.Endpoint do
   # responsible for dispatching responses
   plug(:dispatch)
 
-  # A simple route to test that the server is up
-  # Note, all routes must return a connection as per the Plug spec.
-  get "/results" do
-    send_resp(conn, 200, Poison.encode!(GameGraph.results()))
+  get "/elo" do
+    send_resp(conn, 200, Poison.encode!(%{"response" => Elo.all()}))
   end
 
-  # Handle incoming events, if the payload is the right shape, process the
-  # events, otherwise return an error.
+  get "/elo/:player" do
+    send_resp(conn, 200, Poison.encode!(%{"response" => Elo.get(player) }))
+  end
+
+  get "/results" do
+    send_resp(conn, 200, Poison.encode!(%{"response" => GameGraph.results()}))
+  end
+
   post "/match" do
     {status, body} = HTTP.Controller.Match.post(conn.body_params)
 
