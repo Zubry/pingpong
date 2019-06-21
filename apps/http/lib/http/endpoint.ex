@@ -28,35 +28,9 @@ defmodule HTTP.Endpoint do
   # Handle incoming events, if the payload is the right shape, process the
   # events, otherwise return an error.
   post "/match" do
-    IO.inspect(conn.body_params)
-    {status, body} =
-      case conn.body_params do
-        %{
-          "winner" => winner,
-          "loser" => loser,
-          "winning_score" => winning_score,
-          "losing_score" => losing_score,
-        } -> process_match(winner, loser, winning_score, losing_score)
-        _ -> {422, missing_match()}
-      end
+    {status, body} = HTTP.Controller.Match.post(conn.body_params)
 
     send_resp(conn, status, body)
-  end
-
-  defp process_match(winner, loser, winning_score, losing_score) do
-    # Do some processing on a list of events
-    case GameLedger.record(winner, loser, winning_score, losing_score) do
-      :ok -> {200, Poison.encode!(%{response: "ok"})}
-    end
-  end
-
-  defp missing_match do
-    Poison.encode!(%{error: "Expected Payload: {
-      'winner': id,
-      'winning_score': int,
-      'loser': id,
-      'losing_score': int,
-    }"})
   end
 
   # A catchall route, 'match' will match no matter the request method,
