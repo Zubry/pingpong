@@ -1,3 +1,3 @@
 use Mix.Config
 
-config :http, port: 80
+config :http, port: System.get_env("PORT")
