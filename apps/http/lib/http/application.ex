@@ -15,9 +15,6 @@ defmodule HTTP.Application do
       )
     ]
 
-    IO.inspect(File.cwd())
-    IO.inspect(File.ls())
-
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: HTTP.Supervisor]
