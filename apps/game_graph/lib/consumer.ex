@@ -44,7 +44,7 @@ defmodule GameGraph.Consumer do
       |> Enum.map(fn edge -> %{opponent: edge.v2, games_played: edge.weight || 0} end)
 
     losses = graph
-      |> Graph.out_edges(player)
+      |> Graph.in_edges(player)
       |> Enum.map(fn edge -> %{opponent: edge.v1, games_played: edge.weight || 0} end)
 
     {:reply, %{ wins: wins, losses: losses}, [], graph}

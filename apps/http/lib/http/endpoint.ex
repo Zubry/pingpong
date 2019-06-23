@@ -21,12 +21,16 @@ defmodule HTTP.Endpoint do
   # responsible for dispatching responses
   plug(:dispatch)
 
+  get "/elo/:player" do
+    send_resp(conn, 200, Poison.encode!(%{"response" => Elo.get(player) }))
+  end
+
   get "/elo" do
     send_resp(conn, 200, Poison.encode!(%{"response" => Elo.all()}))
   end
 
-  get "/elo/:player" do
-    send_resp(conn, 200, Poison.encode!(%{"response" => Elo.get(player) }))
+  get "/results/:player" do
+    send_resp(conn, 200, Poison.encode!(%{"response" => GameGraph.results(player) }))
   end
 
   get "/results" do
