@@ -18,7 +18,7 @@ defmodule HTTP.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :corsica],
       mod: {HTTP.Application, []}
     ]
   end
@@ -28,6 +28,7 @@ defmodule HTTP.MixProject do
     [
       {:plug_cowboy, "~> 2.0"}, # This will pull in Plug AND Cowboy
       {:poison, "~> 3.1"},
+      {:corsica, "~> 1.0"},
       {:game_graph, in_umbrella: true},
       {:elo, in_umbrella: true}
     ]

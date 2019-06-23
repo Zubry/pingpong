@@ -10,6 +10,8 @@ defmodule HTTP.Endpoint do
 
   # Using Plug.Logger for logging request information
   plug(Plug.Logger)
+
+  plug Corsica, origins: "*", allow_headers: ["content-type", "access-control-allow-origin"], allow_methods: :all, log: [rejected: :info]
   # responsible for matching routes
   plug(:match)
   # Using Poison for JSON decoding
